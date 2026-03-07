@@ -11,6 +11,9 @@ jobs:
     env:
       UPSTREAM_REPO: HITSZ-OpenAuto/hoa-news
       TAG: v0.0.0-alpha
+      ORG_NAME: ${{ vars.ORG_NAME }}
+      repos_array: ${{ vars.REPOS_ARRAY }}
+      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
     steps:
       - name: Resolve arch
         run: |
@@ -34,4 +37,4 @@ jobs:
           sha256sum -c SHA256SUMS --ignore-missing
           tar -xzf "hoa-news_${TAG}_linux_${GOARCH}.tar.gz"
           chmod +x "hoa-news_${TAG}_linux_${GOARCH}"
-          ./hoa-news_${TAG}_linux_${GOARCH} --help
+          ./hoa-news_${TAG}_linux_${GOARCH} news && ./hoa-news_${TAG}_linux_${GOARCH} summary
