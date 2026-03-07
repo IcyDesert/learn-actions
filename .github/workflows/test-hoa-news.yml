@@ -9,7 +9,7 @@ jobs:
     permissions:
       contents: read
     env:
-      UPSTREAM_REPO: your-org/hoa-news
+      UPSTREAM_REPO: HITSZ-OpenAuto/hoa-news
       TAG: v0.0.0-aplha # 建议固定版本，保证可复现
     steps:
       - name: Resolve arch
