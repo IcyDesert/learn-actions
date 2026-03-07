@@ -1,0 +1,37 @@
+name: test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  use-hoa-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      UPSTREAM_REPO: your-org/hoa-news
+      TAG: v0.0.0-aplha # 建议固定版本，保证可复现
+    steps:
+      - name: Resolve arch
+        run: |
+          case "${RUNNER_ARCH}" in
+            X64) echo "GOARCH=amd64" >> $GITHUB_ENV ;;
+            ARM64) echo "GOARCH=arm64" >> $GITHUB_ENV ;;
+            *) echo "Unsupported RUNNER_ARCH=${RUNNER_ARCH}" && exit 1 ;;
+          esac
+
+      - name: Download binary + checksums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # 若上游是私有仓库，改用 PAT
+        run: |
+          ASSET="hoa-news_${TAG}_linux_${GOARCH}.tar.gz"
+          gh release download "${TAG}" --repo "${UPSTREAM_REPO}" --pattern "${ASSET}" --dir dist
+          gh release download "${TAG}" --repo "${UPSTREAM_REPO}" --pattern "SHA256SUMS" --dir dist
+
+      - name: Verify and extract
+        run: |
+          cd dist
+          sha256sum -c SHA256SUMS --ignore-missing
+          tar -xzf "hoa-news_${TAG}_linux_${GOARCH}.tar.gz"
+          chmod +x "hoa-news_${TAG}_linux_${GOARCH}"
+          ./hoa-news_${TAG}_linux_${GOARCH} --help
