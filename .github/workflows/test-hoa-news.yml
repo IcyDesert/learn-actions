@@ -37,4 +37,4 @@ jobs:
           sha256sum -c SHA256SUMS --ignore-missing
           tar -xzf "hoa-news_${TAG}_linux_${GOARCH}.tar.gz"
           chmod +x "hoa-news_${TAG}_linux_${GOARCH}"
-          ./hoa-news_${TAG}_linux_${GOARCH} news ; ./hoa-news_${TAG}_linux_${GOARCH} summary
+          ./hoa-news_${TAG}_linux_${GOARCH} summary
